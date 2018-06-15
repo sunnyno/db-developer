@@ -29,7 +29,7 @@ public class RequestHandler {
         queryMessageService.setDao(new JdbcDao(new DataSourceProvider().getDataSource(properties)));
     }
 
-    RequestHandler() {
+    public RequestHandler() {
     }
 
     public void execute(String[] queries) {
@@ -75,7 +75,7 @@ public class RequestHandler {
         this.responseWriter = responseWriter;
     }
 
-    public void setQueryMessageService(QueryMessageService queryMessageService) {
+    void setQueryMessageService(QueryMessageService queryMessageService) {
         this.queryMessageService = queryMessageService;
     }
 }
