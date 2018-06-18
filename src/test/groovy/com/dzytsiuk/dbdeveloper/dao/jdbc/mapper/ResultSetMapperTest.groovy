@@ -1,6 +1,7 @@
-package com.dzytsiuk.dbdeveloper.dao.jdbc
+package com.dzytsiuk.dbdeveloper.dao.jdbc.mapper
 
-import com.dzytsiuk.dbdeveloper.entity.ResultSetData
+import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.mapper.ResultSetMapper
+import com.dzytsiuk.dbdeveloper.entity.Data
 import javafx.collections.FXCollections
 import org.junit.Test
 
@@ -15,7 +16,7 @@ class ResultSetMapperTest {
     @Test
     void mapResultSetTest() {
         def data = FXCollections.observableArrayList()
-        ResultSetData expectedResultSetData = new ResultSetData(columnNames: ["id"], data: data);
+        Data expectedResultSetData = new Data(columnNames: ["id"], data: data);
         def rsMetaDataMock = [getColumnCount: { 1 }, getColumnName: { column -> "id" }] as ResultSetMetaData
         def rsmock = [
                 getMetaData: { rsMetaDataMock },

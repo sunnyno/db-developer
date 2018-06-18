@@ -1,19 +1,24 @@
-package com.dzytsiuk.dbdeveloper.control;
+package com.dzytsiuk.dbdeveloper.ui.control;
 
-import com.dzytsiuk.dbdeveloper.handler.RequestHandler;
-import com.dzytsiuk.dbdeveloper.handler.ResponseWriter;
+import com.dzytsiuk.dbdeveloper.Starter;
+import com.dzytsiuk.dbdeveloper.entity.Result;
+import com.dzytsiuk.dbdeveloper.locator.ServiceLocator;
+import com.dzytsiuk.dbdeveloper.service.QueryMessageService;
+import com.dzytsiuk.dbdeveloper.ui.handler.ResultViewer;
+import javafx.beans.binding.Bindings;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
+import javafx.scene.input.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 
+import javax.swing.text.html.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 public class Controller {
@@ -32,10 +37,12 @@ public class Controller {
     @FXML
     private Label database;
 
-    private ResponseWriter responseWriter;
+
+    private ResultViewer resultViewer;
     private final Clipboard clipboard = Clipboard.getSystemClipboard();
     private final ClipboardContent content = new ClipboardContent();
     private Properties properties;
+    private QueryMessageService queryMessageService;
 
     public Controller() {
 
@@ -46,17 +53,16 @@ public class Controller {
     private void initialize() {
         result.setEditable(false);
         query.setEditable(false);
-        responseWriter = new ResponseWriter(result, selectResult);
+        ServiceLocator.registerService("resultViewer", new ResultViewer(result, selectResult));
 
     }
 
     @FXML
     private void executeQuery() {
         if (properties != null) {
-            RequestHandler requestHandler = new RequestHandler(properties);
-            requestHandler.setResponseWriter(responseWriter);
             String queryText = getSelectedText();
-            requestHandler.execute(((queryText == null) ? query.getText() : queryText).trim().split(";"));
+            List<Result> resultList = queryMessageService.execute(((queryText == null) ? query.getText() : queryText).trim().split(";"));
+            resultViewer.viewResult(resultList);
         }
     }
 
@@ -65,14 +71,27 @@ public class Controller {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Property File");
         fileChooser.setInitialDirectory(new File("src/main/resources"));
-        try {
+        try (FileInputStream inStream = new FileInputStream(fileChooser.showOpenDialog(new Stage()))) {
             properties = new Properties();
-            properties.load(new FileInputStream(fileChooser.showOpenDialog(new Stage())));
+            properties.load(inStream);
+
+            Starter.registerServices(properties);
+
             database.setText(properties.getProperty("database"));
             query.setEditable(true);
+            queryMessageService = (QueryMessageService) ServiceLocator.get("queryMessageService");
+            resultViewer = (ResultViewer) ServiceLocator.get("resultViewer");
+
+            query.getScene().setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER && event.isControlDown()) {
+                    executeQuery();
+                }
+
+            });
         } catch (IOException e) {
-            responseWriter.writeResponse("Failed to load properties");
+            resultViewer.writeResponse("Failed to load properties\n");
         }
+
     }
 
     private String getSelectedText() {

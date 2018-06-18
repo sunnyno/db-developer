@@ -1,8 +1,10 @@
-package com.dzytsiuk.dbdeveloper.handler;
+package com.dzytsiuk.dbdeveloper.ui.handler;
 
-import com.dzytsiuk.dbdeveloper.entity.ResultSetData;
+import com.dzytsiuk.dbdeveloper.entity.Data;
+import com.dzytsiuk.dbdeveloper.entity.Result;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -12,22 +14,26 @@ import javafx.util.Callback;
 
 import java.util.List;
 
-public class ResponseWriter {
+public class ResultViewer {
     private TextArea result;
 
     private TableView selectResult;
 
-    public ResponseWriter(TextArea result, TableView selectResult) {
+    public ResultViewer(TextArea result, TableView selectResult) {
         this.result = result;
         this.selectResult = selectResult;
 
     }
 
-    public void writeSelectResult(ResultSetData resultSetData) {
+    public void writeSelectResult(Data data) {
         selectResult.getColumns().clear();
-        ObservableList<ObservableList<String>> data = resultSetData.getData();
+        ObservableList<ObservableList<String>> observableData = FXCollections.observableArrayList();
+        for (int i = 0; i < data.getData().size(); i++) {
+            List<String> col = data.getData().get(i);
+            observableData.add(FXCollections.observableArrayList(col));
+        }
 
-        List<String> columnNames = resultSetData.getColumnNames();
+        List<String> columnNames = data.getColumnNames();
         for (int i = 0; i < columnNames.size(); i++) {
 
             final int j = i;
@@ -38,9 +44,7 @@ public class ResponseWriter {
 
             selectResult.getColumns().addAll(col);
         }
-        selectResult.setItems(data);
-        int size = data.size();
-        result.appendText(size + (size == 1 ? " row" : " rows") + " fetched\n");
+        selectResult.setItems(observableData);
     }
 
     public void writeResponse(String message) {
@@ -48,4 +52,13 @@ public class ResponseWriter {
     }
 
 
+    public void viewResult(List<Result> resultList) {
+        for (Result result : resultList) {
+            if (result.hasData()) {
+                writeSelectResult(result.getData());
+            }
+            writeResponse(result.getMessage());
+
+        }
+    }
 }

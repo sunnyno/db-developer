@@ -1,19 +1,19 @@
 package com.dzytsiuk.dbdeveloper.entity;
 
-import javafx.collections.ObservableList;
-
 import java.util.List;
 import java.util.Objects;
 
-public class ResultSetData {
-    private List<String> columnNames;
-    private ObservableList<ObservableList<String>> data;
+public class Data {
 
-    public ObservableList<ObservableList<String>> getData() {
+    private List<String> columnNames;
+
+    private List<List<String>> data;
+
+    public List<List<String>> getData() {
         return data;
     }
 
-    public void setData(ObservableList<ObservableList<String>> data) {
+    public void setData(List<List<String>> data) {
         this.data = data;
     }
 
@@ -29,7 +29,7 @@ public class ResultSetData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ResultSetData that = (ResultSetData) o;
+        Data that = (Data) o;
         return Objects.equals(columnNames, that.columnNames) &&
                 Objects.equals(data, that.data);
     }

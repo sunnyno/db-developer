@@ -1,4 +1,4 @@
-package com.dzytsiuk.dbdeveloper.datasource;
+package com.dzytsiuk.dbdeveloper.dao.jdbc.mapper;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 

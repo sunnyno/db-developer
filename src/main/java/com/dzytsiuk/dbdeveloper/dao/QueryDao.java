@@ -1,13 +1,13 @@
 package com.dzytsiuk.dbdeveloper.dao;
 
 
-import com.dzytsiuk.dbdeveloper.entity.ResultSetData;
+import com.dzytsiuk.dbdeveloper.entity.Data;
 
 
-public interface DAO {
+public interface QueryDao {
     boolean create(String query);
 
-    ResultSetData select(String query);
+    Data select(String query);
 
     int insert(String query);
 

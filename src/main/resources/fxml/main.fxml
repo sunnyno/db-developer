@@ -15,9 +15,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.Tooltip?>
 <VBox maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
       prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.dzytsiuk.dbdeveloper.control.Controller">
+      fx:controller="com.dzytsiuk.dbdeveloper.ui.control.Controller">
 
     <children>
 
@@ -42,8 +43,8 @@
         </MenuBar>
         <AnchorPane fx:id="Content" VBox.vgrow="ALWAYS">
             <children>
-                <ImageView id="executeQuery" accessibleRole="BUTTON" fitHeight="16.0" fitWidth="19.0" layoutX="36.0"
-                           layoutY="15.0" onMouseClicked="#executeQuery" pickOnBounds="true" preserveRatio="true">
+                <ImageView accessibleRole="BUTTON" fitHeight="16.0" fitWidth="19.0" layoutX="36.0"
+                           layoutY="15.0" onMouseClicked="#executeQuery" pickOnBounds="true" preserveRatio="true" style="">
                     <image>
                         <Image url="@../img/execute.jpg"/>
                     </image>

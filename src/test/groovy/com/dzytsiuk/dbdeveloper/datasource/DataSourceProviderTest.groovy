@@ -1,5 +1,6 @@
 package com.dzytsiuk.dbdeveloper.datasource
 
+import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.DataSourceProvider
 import com.mysql.cj.jdbc.MysqlDataSource
 import org.junit.Test
 import static org.junit.Assert.assertEquals;
