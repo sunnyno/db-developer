@@ -1,9 +1,12 @@
 package com.dzytsiuk.dbdeveloper;
 
-import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.DataSourceProvider;
-import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.JdbcQueryDao;
+import com.dzytsiuk.dbdeveloper.dao.customdb.CustomDataSource;
+import com.dzytsiuk.dbdeveloper.dao.customdb.CustomQueryDao;
+import com.dzytsiuk.dbdeveloper.dao.jdbc.DataSourceProvider;
+import com.dzytsiuk.dbdeveloper.dao.jdbc.JdbcQueryDao;
 import com.dzytsiuk.dbdeveloper.locator.ServiceLocator;
 import com.dzytsiuk.dbdeveloper.service.QueryMessageService;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,8 +34,15 @@ public class Starter extends Application {
 
     public static void registerServices(Properties properties) {
         DataSource dataSource = new DataSourceProvider().getDataSource(properties);
-        ServiceLocator.registerService("queryDao", new JdbcQueryDao(dataSource));
+        if (dataSource instanceof MysqlDataSource) {
+            ServiceLocator.registerService("queryDao", new JdbcQueryDao(dataSource));
+        } else {
+            ServiceLocator.registerService("queryDao", new CustomQueryDao(
+                    new CustomDataSource(properties)));
+            System.out.println("registered");
+        }
         ServiceLocator.registerService("queryMessageService", new QueryMessageService());
+
     }
 
 

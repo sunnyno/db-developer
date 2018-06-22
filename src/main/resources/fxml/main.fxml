@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.Button?>
 <VBox maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
       prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dzytsiuk.dbdeveloper.ui.control.Controller">
@@ -43,16 +44,23 @@
         </MenuBar>
         <AnchorPane fx:id="Content" VBox.vgrow="ALWAYS">
             <children>
-                <ImageView accessibleRole="BUTTON" fitHeight="16.0" fitWidth="19.0" layoutX="36.0"
-                           layoutY="15.0" onMouseClicked="#executeQuery" pickOnBounds="true" preserveRatio="true" style="">
-                    <image>
-                        <Image url="@../img/execute.jpg"/>
-                    </image>
-                </ImageView>
+                <Button layoutX="36.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#executeQuery">
+                    <tooltip>
+                        <Tooltip text="Ctrl+Enter"/>
+                    </tooltip>
+                    <graphic>
+                        <ImageView accessibleRole="BUTTON" fitHeight="16.0" fitWidth="19.0" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <image>
+                                <Image url="@../img/execute.jpg"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <TextArea fx:id="query" layoutX="14.0" layoutY="42.0" AnchorPane.bottomAnchor="240.0"
                           AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="42.0"
                           HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                       
+
                 </TextArea>
                 <TabPane layoutX="14.0" layoutY="357.0" tabClosingPolicy="UNAVAILABLE"
                          AnchorPane.bottomAnchor="0.33333333333328596" AnchorPane.leftAnchor="25.0"

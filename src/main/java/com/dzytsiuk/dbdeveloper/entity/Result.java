@@ -3,9 +3,9 @@ package com.dzytsiuk.dbdeveloper.entity;
 import java.util.Objects;
 
 public class Result {
-    String message;
-    Data data;
-    boolean hasData;
+    private String message;
+    private Data data;
+    private boolean hasData;
 
     public String getMessage() {
         return message;

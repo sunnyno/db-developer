@@ -1,6 +1,6 @@
-package com.dzytsiuk.dbdeveloper.dao.jdbc.mapper
+package com.dzytsiuk.dbdeveloper.dao.jdbc
 
-import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.mapper.ResultSetMapper
+import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.ResultSetMapper
 import com.dzytsiuk.dbdeveloper.entity.Data
 import javafx.collections.FXCollections
 import org.junit.Test

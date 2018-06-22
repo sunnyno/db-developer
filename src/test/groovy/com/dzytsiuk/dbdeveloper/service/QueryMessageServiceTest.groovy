@@ -1,6 +1,6 @@
 package com.dzytsiuk.dbdeveloper.service
 
-import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.JdbcQueryDao
+import com.dzytsiuk.dbdeveloper.dao.jdbc.JdbcQueryDao
 import com.dzytsiuk.dbdeveloper.entity.Data
 import com.dzytsiuk.dbdeveloper.entity.Result
 import com.dzytsiuk.dbdeveloper.locator.ServiceLocator
@@ -39,7 +39,7 @@ class QueryMessageServiceTest {
 
         QueryMessageService queryMessageService = new QueryMessageService()
         List<String> actualResult = new ArrayList<>();
-        queryTypes.each { actualResult.add(queryMessageService.applyFunction(it, it)) }
+        queryTypes.each { actualResult.add(queryMessageService.applyFunction(it)) }
 
         expectedResult.each { assertTrue(actualResult.remove(it)) }
     }

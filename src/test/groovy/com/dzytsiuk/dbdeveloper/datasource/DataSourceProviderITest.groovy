@@ -1,11 +1,11 @@
 package com.dzytsiuk.dbdeveloper.datasource
 
-import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.DataSourceProvider
+import com.dzytsiuk.dbdeveloper.dao.jdbc.DataSourceProvider
 import com.mysql.cj.jdbc.MysqlDataSource
 import org.junit.Test
 import static org.junit.Assert.assertEquals;
 
-class DataSourceProviderTest {
+class DataSourceProviderITest {
     @Test
     void getDataSourceTest() {
         Properties properties = new Properties()

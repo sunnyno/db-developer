@@ -16,7 +16,6 @@ public class QueryMessageService {
     private static final String DELETE = "delete";
     private static final String CREATE = "create";
     private static final String DROP = "drop";
-    private static final int QUERY_TYPE_WORD_INDEX = 0;
 
     private QueryDao queryDao;
 
@@ -29,16 +28,16 @@ public class QueryMessageService {
         for (String query : queries) {
             Result result = new Result();
 
-            String queryType = query.replace("\n", "").split("\\s")[QUERY_TYPE_WORD_INDEX];
+            query = query.toLowerCase().trim();
             try {
-                if (queryType.equalsIgnoreCase(SELECT)) {
+                if (query.contains(SELECT)) {
                     Data data = queryDao.select(query);
                     result.setData(data);
                     result.setHasData(true);
                     int affectedRows = data.getData().size();
                     result.setMessage(affectedRows + (affectedRows == 1 ? " row" : " rows") + " fetched\n");
                 } else {
-                    result.setMessage(applyFunction(queryType, query));
+                    result.setMessage(applyFunction(query));
                     result.setHasData(false);
                 }
             } catch (QueryExecuteException e) {
@@ -52,28 +51,27 @@ public class QueryMessageService {
     }
 
 
-    String applyFunction(String queryType, String query) {
+    String applyFunction(String query) {
 
-        if (queryType.equalsIgnoreCase(INSERT)) {
+        if (query.contains(INSERT)) {
             Integer affectedRows = queryDao.insert(query);
             return affectedRows + (affectedRows == 1 ? " row" : " rows") + " inserted\n";
-        } else if (queryType.equalsIgnoreCase(UPDATE)) {
+        } else if (query.contains(UPDATE)) {
             Integer affectedRows = queryDao.update(query);
             return affectedRows + (affectedRows == 1 ? " row" : " rows") + " updated\n";
-        } else if (queryType.equalsIgnoreCase(DELETE)) {
+        } else if (query.contains(DELETE)) {
             Integer affectedRows = queryDao.delete(query);
             return affectedRows + (affectedRows == 1 ? " row" : " rows") + " deleted\n";
-        } else if (queryType.equalsIgnoreCase(CREATE)) {
+        } else if (query.contains(CREATE)) {
+            System.out.println(query);
             Boolean result = queryDao.create(query);
             return result ? "Table created\n" : "Error creating table\n";
-        } else if (queryType.equalsIgnoreCase(DROP)) {
+        } else if (query.contains(DROP)) {
             Boolean result = queryDao.drop(query);
             return result ? "Table dropped\n" : "Error dropping table\n";
         } else {
             return "Unable to parse query\n";
         }
-
-
     }
 
 

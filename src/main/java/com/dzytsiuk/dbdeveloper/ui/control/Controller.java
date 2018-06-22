@@ -5,16 +5,16 @@ import com.dzytsiuk.dbdeveloper.entity.Result;
 import com.dzytsiuk.dbdeveloper.locator.ServiceLocator;
 import com.dzytsiuk.dbdeveloper.service.QueryMessageService;
 import com.dzytsiuk.dbdeveloper.ui.handler.ResultViewer;
-import javafx.beans.binding.Bindings;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 
-import javax.swing.text.html.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,7 +54,6 @@ public class Controller {
         result.setEditable(false);
         query.setEditable(false);
         ServiceLocator.registerService("resultViewer", new ResultViewer(result, selectResult));
-
     }
 
     @FXML
@@ -70,7 +69,7 @@ public class Controller {
     private void getPropertyFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Property File");
-        fileChooser.setInitialDirectory(new File("src/main/resources"));
+        fileChooser.setInitialDirectory(new File("src/main/resources/properties"));
         try (FileInputStream inStream = new FileInputStream(fileChooser.showOpenDialog(new Stage()))) {
             properties = new Properties();
             properties.load(inStream);
@@ -86,8 +85,8 @@ public class Controller {
                 if (event.getCode() == KeyCode.ENTER && event.isControlDown()) {
                     executeQuery();
                 }
-
             });
+
         } catch (IOException e) {
             resultViewer.writeResponse("Failed to load properties\n");
         }

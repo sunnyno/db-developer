@@ -1,4 +1,4 @@
-package com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.mapper;
+package com.dzytsiuk.dbdeveloper.dao.jdbc.mapper;
 
 import com.dzytsiuk.dbdeveloper.entity.Data;
 
