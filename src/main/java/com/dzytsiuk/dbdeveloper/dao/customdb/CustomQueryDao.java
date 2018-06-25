@@ -78,8 +78,8 @@ public class CustomQueryDao implements QueryDao {
             String sb = getResult(query, outputStream, inputStream);
             return Integer.valueOf(sb);
 
-        } catch (IOException e) {
-            throw new QueryExecuteException("Error executing query " + query, e);
+        } catch (Exception e) {
+            throw new QueryExecuteException("Insert error " + query, e);
         }
     }
 
@@ -93,7 +93,7 @@ public class CustomQueryDao implements QueryDao {
             return Integer.valueOf(sb);
 
         } catch (Exception e) {
-            throw new QueryExecuteException("Error executing query " + query, e);
+            throw new QueryExecuteException("Update error " + query, e);
         }
     }
 
@@ -104,10 +104,10 @@ public class CustomQueryDao implements QueryDao {
             OutputStream outputStream = customDataSource.getOutputStream();
             InputStream inputStream = customDataSource.getInputStream();
             String sb = getResult(query, outputStream, inputStream);
-            return Integer.valueOf(sb + "");
+            return Integer.valueOf(sb);
 
-        } catch (IOException e) {
-            throw new QueryExecuteException("Error executing query " + query, e);
+        } catch (Exception e) {
+            throw new QueryExecuteException("Delete error " + query, e);
         }
     }
 
