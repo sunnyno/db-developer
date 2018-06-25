@@ -63,12 +63,11 @@ public class QueryMessageService {
             Integer affectedRows = queryDao.delete(query);
             return affectedRows + (affectedRows == 1 ? " row" : " rows") + " deleted\n";
         } else if (query.contains(CREATE)) {
-            System.out.println(query);
             Boolean result = queryDao.create(query);
-            return result ? "Table created\n" : "Error creating table\n";
+            return result ? "Created\n" : "Error creating \n";
         } else if (query.contains(DROP)) {
             Boolean result = queryDao.drop(query);
-            return result ? "Table dropped\n" : "Error dropping table\n";
+            return result ? "Dropped\n" : "Error dropping \n";
         } else {
             return "Unable to parse query\n";
         }

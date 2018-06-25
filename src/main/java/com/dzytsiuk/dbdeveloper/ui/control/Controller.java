@@ -69,7 +69,7 @@ public class Controller {
     private void getPropertyFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Property File");
-        fileChooser.setInitialDirectory(new File("src/main/resources/properties"));
+        fileChooser.setInitialDirectory(new File(getClass().getResource("/properties/").getFile()));
         try (FileInputStream inStream = new FileInputStream(fileChooser.showOpenDialog(new Stage()))) {
             properties = new Properties();
             properties.load(inStream);

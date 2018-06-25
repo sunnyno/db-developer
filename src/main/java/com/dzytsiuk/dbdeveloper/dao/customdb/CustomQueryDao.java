@@ -25,12 +25,11 @@ public class CustomQueryDao implements QueryDao {
         try {
             OutputStream outputStream = customDataSource.getOutputStream();
             InputStream inputStream = customDataSource.getInputStream();
-            System.out.println(query);
             String sb = getResult(query, outputStream, inputStream);
             return Integer.valueOf(sb) == 1;
 
         } catch (Exception e) {
-            throw new QueryExecuteException("Error executing query " + query, e);
+            throw new QueryExecuteException("Error creating table " + query, e);
         }
     }
 
@@ -61,8 +60,7 @@ public class CustomQueryDao implements QueryDao {
                 }
 
             }
-            Data data = CUSTOM_ROW_MAPPER.mapRow(tmp);
-            return data;
+            return CUSTOM_ROW_MAPPER.mapRow(tmp);
 
         } catch (Exception e) {
             throw new QueryExecuteException("Error executing query " + query, e);
@@ -123,7 +121,7 @@ public class CustomQueryDao implements QueryDao {
             return Integer.valueOf(sb) == 1;
 
         } catch (Exception e) {
-            throw new QueryExecuteException("Error executing query " + query, e);
+            throw new QueryExecuteException("Error dropping table " + query, e);
         }
     }
 
