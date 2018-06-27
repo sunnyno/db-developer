@@ -32,10 +32,14 @@ public class QueryMessageService {
             try {
                 if (query.contains(SELECT)) {
                     Data data = queryDao.select(query);
+
                     result.setData(data);
-                    result.setHasData(true);
-                    int affectedRows = data.getData().size();
+                    List<List<String>> rows = data.getData();
+                    result.setHasData(rows != null);
+                    int affectedRows = (rows != null) ? rows.size() : 0;
+
                     result.setMessage(affectedRows + (affectedRows == 1 ? " row" : " rows") + " fetched\n");
+
                 } else {
                     result.setMessage(applyFunction(query));
                     result.setHasData(false);

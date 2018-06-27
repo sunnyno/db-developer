@@ -37,17 +37,28 @@ public class Starter extends Application {
         if (dataSource instanceof MysqlDataSource) {
             ServiceLocator.registerService("queryDao", new JdbcQueryDao(dataSource));
         } else {
+            CustomDataSource customDataSource = new CustomDataSource(properties);
+            ServiceLocator.registerService("customDataSource", customDataSource);
             ServiceLocator.registerService("queryDao", new CustomQueryDao(
-                    new CustomDataSource(properties)));
-            System.out.println("registered");
+                    customDataSource));
         }
+        System.out.println("registered");
         ServiceLocator.registerService("queryMessageService", new QueryMessageService());
 
     }
 
 
     public static void main(String[] args) {
-        launch(args);
+        try {
+            launch(args);
+        } finally {
+            CustomDataSource customDataSource = (CustomDataSource) ServiceLocator.get("customDataSource");
+            if (customDataSource != null) {
+                customDataSource.close();
+            }
+            System.out.println("disconnected");
+        }
+
     }
 
 

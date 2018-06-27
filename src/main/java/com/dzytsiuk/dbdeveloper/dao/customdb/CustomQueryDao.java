@@ -10,8 +10,7 @@ import java.io.*;
 public class CustomQueryDao implements QueryDao {
     private static final CustomRowMapper CUSTOM_ROW_MAPPER = new CustomRowMapper();
     private static final String ESCAPE_CHAR = "\\";
-    private static final String SEPARATOR = System.getProperty("line.separator");
-    private static final String TMP_PATH = "src/main/resources/tmp/" + "tmp.xml";
+
 
     private CustomDataSource customDataSource;
 
@@ -23,9 +22,9 @@ public class CustomQueryDao implements QueryDao {
     @Override
     public boolean create(String query) {
         try {
-            OutputStream outputStream = customDataSource.getOutputStream();
-            InputStream inputStream = customDataSource.getInputStream();
-            String sb = getResult(query, outputStream, inputStream);
+            BufferedWriter bufferedWriter = customDataSource.getWriter();
+            BufferedReader bufferedReader = customDataSource.getReader();
+            String sb = getResult(query, bufferedWriter, bufferedReader);
             return Integer.valueOf(sb) == 1;
 
         } catch (Exception e) {
@@ -36,36 +35,20 @@ public class CustomQueryDao implements QueryDao {
 
     @Override
     public Data select(String query) {
-        File tmp = new File(TMP_PATH);
 
         try {
-            OutputStream outputStream = customDataSource.getOutputStream();
             InputStream inputStream = customDataSource.getInputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            BufferedWriter bufferedWriter = customDataSource.getWriter();
             bufferedWriter.write(query);
             bufferedWriter.newLine();
             bufferedWriter.write(ESCAPE_CHAR);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-
-            try (FileWriter fileWriter = new FileWriter(tmp, true);) {
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null && !line.equals(ESCAPE_CHAR)) {
-                    if (!line.equals(ESCAPE_CHAR) && !line.equals(SEPARATOR)) {
-                        fileWriter.append(line);
-                    }
-                }
-
-            }
-            return CUSTOM_ROW_MAPPER.mapRow(tmp);
+            return CUSTOM_ROW_MAPPER.mapRow(inputStream);
 
         } catch (Exception e) {
             throw new QueryExecuteException("Error executing query " + query, e);
-        } finally {
-            tmp.delete();
         }
     }
 
@@ -73,9 +56,9 @@ public class CustomQueryDao implements QueryDao {
     public int insert(String query) {
         try {
 
-            OutputStream outputStream = customDataSource.getOutputStream();
-            InputStream inputStream = customDataSource.getInputStream();
-            String sb = getResult(query, outputStream, inputStream);
+            BufferedWriter writer = customDataSource.getWriter();
+            BufferedReader reader = customDataSource.getReader();
+            String sb = getResult(query, writer, reader);
             return Integer.valueOf(sb);
 
         } catch (Exception e) {
@@ -86,10 +69,10 @@ public class CustomQueryDao implements QueryDao {
     @Override
     public int update(String query) {
         try {
-            OutputStream outputStream = customDataSource.getOutputStream();
-            InputStream inputStream = customDataSource.getInputStream();
+            BufferedWriter writer = customDataSource.getWriter();
+            BufferedReader reader = customDataSource.getReader();
 
-            String sb = getResult(query, outputStream, inputStream);
+            String sb = getResult(query, writer, reader);
             return Integer.valueOf(sb);
 
         } catch (Exception e) {
@@ -101,9 +84,10 @@ public class CustomQueryDao implements QueryDao {
     public int delete(String query) {
         try {
 
-            OutputStream outputStream = customDataSource.getOutputStream();
-            InputStream inputStream = customDataSource.getInputStream();
-            String sb = getResult(query, outputStream, inputStream);
+            BufferedWriter writer = customDataSource.getWriter();
+            BufferedReader reader = customDataSource.getReader();
+
+            String sb = getResult(query, writer, reader);
             return Integer.valueOf(sb);
 
         } catch (Exception e) {
@@ -114,10 +98,10 @@ public class CustomQueryDao implements QueryDao {
     @Override
     public boolean drop(String query) {
         try {
-            OutputStream outputStream = customDataSource.getOutputStream();
-            InputStream inputStream = customDataSource.getInputStream();
+            BufferedWriter writer = customDataSource.getWriter();
+            BufferedReader reader = customDataSource.getReader();
 
-            String sb = getResult(query, outputStream, inputStream);
+            String sb = getResult(query, writer, reader);
             return Integer.valueOf(sb) == 1;
 
         } catch (Exception e) {
@@ -125,8 +109,8 @@ public class CustomQueryDao implements QueryDao {
         }
     }
 
-    private String getResult(String query, OutputStream outputStream, InputStream inputStream) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+    private String getResult(String query, BufferedWriter bufferedWriter, BufferedReader bufferedReader) throws IOException {
+
         bufferedWriter.write(query);
         bufferedWriter.newLine();
         bufferedWriter.write(ESCAPE_CHAR);
@@ -134,9 +118,8 @@ public class CustomQueryDao implements QueryDao {
         bufferedWriter.flush();
 
         StringBuilder sb = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ((line = reader.readLine()) != null && !line.equals(ESCAPE_CHAR)) {
+        while ((line = bufferedReader.readLine()) != null && !line.equals(ESCAPE_CHAR)) {
             sb.append(line);
         }
         return sb.toString();

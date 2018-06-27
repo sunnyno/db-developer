@@ -5,6 +5,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 
 public class RowHandler extends DefaultHandler {
@@ -56,5 +57,9 @@ public class RowHandler extends DefaultHandler {
             data.getData().add(row);
         }
         depth--;
+
+        if(depth == 0){
+            throw new EmptyStackException();
+        }
     }
 }
