@@ -5,13 +5,13 @@ import java.util.Map;
 
 public class ServiceLocator {
 
-    private static final Map<String, Object> REGISTRY = new HashMap<>();
+    private static final Map<Class, Object> REGISTRY = new HashMap<>();
 
-    public static void registerService(String serviceName, Object service) {
-        REGISTRY.put(serviceName, service);
+    public static <T> void registerService(Class<T> serviceClass, Object service) {
+        REGISTRY.put(serviceClass, service);
     }
 
-    public static Object get(String serviceName) {
-        return REGISTRY.get(serviceName);
+    public static <T> T get(Class<T> serviceClass) {
+        return serviceClass.cast(REGISTRY.get(serviceClass));
     }
 }

@@ -53,14 +53,15 @@ public class Controller {
     private void initialize() {
         result.setEditable(false);
         query.setEditable(false);
-        ServiceLocator.registerService("resultViewer", new ResultViewer(result, selectResult));
+        ServiceLocator.registerService(ResultViewer.class, new ResultViewer(result, selectResult));
     }
 
     @FXML
     private void executeQuery() {
         if (properties != null) {
             String queryText = getSelectedText();
-            List<Result> resultList = queryMessageService.execute(((queryText == null) ? query.getText() : queryText).trim().split(";"));
+            String[] queriesToExecute = ((queryText == null) ? query.getText() : queryText).trim().split(";");
+            List<Result> resultList = queryMessageService.execute(queriesToExecute);
             resultViewer.viewResult(resultList);
         }
     }
@@ -78,9 +79,8 @@ public class Controller {
 
             database.setText(properties.getProperty("database"));
             query.setEditable(true);
-            queryMessageService = (QueryMessageService) ServiceLocator.get("queryMessageService");
-            resultViewer = (ResultViewer) ServiceLocator.get("resultViewer");
-
+            queryMessageService = ServiceLocator.get(QueryMessageService.class);
+            resultViewer = ServiceLocator.get(ResultViewer.class);
             query.getScene().setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ENTER && event.isControlDown()) {
                     executeQuery();

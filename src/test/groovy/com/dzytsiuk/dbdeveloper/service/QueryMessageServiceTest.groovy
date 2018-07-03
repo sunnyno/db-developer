@@ -1,5 +1,6 @@
 package com.dzytsiuk.dbdeveloper.service
 
+import com.dzytsiuk.dbdeveloper.dao.QueryDao
 import com.dzytsiuk.dbdeveloper.dao.jdbc.JdbcQueryDao
 import com.dzytsiuk.dbdeveloper.entity.Data
 import com.dzytsiuk.dbdeveloper.entity.Result
@@ -18,29 +19,23 @@ class QueryMessageServiceTest {
         List<Result> expectedResult = new ArrayList<>();
         expectedResult.add(result)
         def queryDao = [select: { q -> data }] as JdbcQueryDao
-        ServiceLocator.registerService("queryDao", queryDao)
-
+        ServiceLocator.registerService(QueryDao.class, queryDao)
         QueryMessageService queryMessageService = new QueryMessageService()
         def actualResult = queryMessageService.execute(query) as List<Result>
         expectedResult.each { assertTrue(actualResult.remove(it)) }
-
-
     }
 
     @Test
     void applyFunctionTest() {
         def queryTypes = ["insert", "update", "delete", "drop", "create"]
-        def expectedResult = ["1 row inserted\n", "1 row updated\n", "1 row deleted\n", "Table dropped\n", "Table created\n"]
+        def expectedResult = ["1 row inserted\n", "1 row updated\n", "1 row deleted\n", "Dropped\n", "Created\n"]
         def queryDao = [insert: { q -> 1 }, update: { q -> 1 },
                         delete: { q -> 1 }, drop: { q -> true }, create: { q -> true }
         ] as JdbcQueryDao
-
-        ServiceLocator.registerService("queryDao", queryDao)
-
+        ServiceLocator.registerService(QueryDao.class, queryDao)
         QueryMessageService queryMessageService = new QueryMessageService()
         List<String> actualResult = new ArrayList<>();
         queryTypes.each { actualResult.add(queryMessageService.applyFunction(it)) }
-
         expectedResult.each { assertTrue(actualResult.remove(it)) }
     }
 }

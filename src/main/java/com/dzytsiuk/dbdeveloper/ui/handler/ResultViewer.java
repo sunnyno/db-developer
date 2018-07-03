@@ -29,15 +29,12 @@ public class ResultViewer {
             List<String> col = data.getData().get(i);
             observableData.add(FXCollections.observableArrayList(col));
         }
-
         List<String> columnNames = data.getColumnNames();
         for (int i = 0; i < columnNames.size(); i++) {
-
             final int j = i;
             TableColumn<ObservableList, String> col = new TableColumn<>(columnNames.get(i));
             col.setCellValueFactory(param ->
                     new SimpleStringProperty(param.getValue().get(j).toString()));
-
             selectResult.getColumns().addAll(col);
         }
         selectResult.setItems(observableData);
@@ -54,7 +51,6 @@ public class ResultViewer {
                 writeSelectResult(result.getData());
             }
             writeResponse(result.getMessage());
-
         }
     }
 }

@@ -2,30 +2,29 @@ package com.dzytsiuk.dbdeveloper.dao.jdbc;
 
 import com.dzytsiuk.dbdeveloper.dao.QueryDao;
 import com.dzytsiuk.dbdeveloper.dao.jdbc.mapper.ResultSetMapper;
-import com.dzytsiuk.dbdeveloper.exception.QueryExecuteException;
 import com.dzytsiuk.dbdeveloper.entity.Data;
+import com.dzytsiuk.dbdeveloper.exception.QueryExecuteException;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Properties;
 
 public class JdbcQueryDao implements QueryDao {
     private static final ResultSetMapper RESULT_SET_MAPPER = new ResultSetMapper();
-    private DataSource dataSource;
+    private static final String URL = "url";
 
-    public JdbcQueryDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private Properties properties;
 
     public JdbcQueryDao() {
     }
 
+    public JdbcQueryDao(Properties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public boolean create(String query) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query);) {
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             return stmt.executeUpdate() == 0;
         } catch (SQLException e) {
             throw new QueryExecuteException("Unable to execute query " + query, e);
@@ -34,7 +33,7 @@ public class JdbcQueryDao implements QueryDao {
 
     @Override
     public Data select(String query) {
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
              PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet resultSet = stmt.executeQuery();) {
             return RESULT_SET_MAPPER.mapResultSet(resultSet);
@@ -45,7 +44,7 @@ public class JdbcQueryDao implements QueryDao {
 
     @Override
     public int insert(String query) {
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
              PreparedStatement stmt = connection.prepareStatement(query);) {
             return stmt.executeUpdate();
         } catch (SQLException e) {
@@ -55,7 +54,7 @@ public class JdbcQueryDao implements QueryDao {
 
     @Override
     public int update(String query) {
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
              PreparedStatement stmt = connection.prepareStatement(query);) {
             return stmt.executeUpdate();
         } catch (SQLException e) {
@@ -65,7 +64,7 @@ public class JdbcQueryDao implements QueryDao {
 
     @Override
     public int delete(String query) {
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
              PreparedStatement stmt = connection.prepareStatement(query);) {
             return stmt.executeUpdate();
         } catch (SQLException e) {
@@ -75,13 +74,11 @@ public class JdbcQueryDao implements QueryDao {
 
     @Override
     public boolean drop(String query) {
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(properties.getProperty(URL), properties);
              PreparedStatement stmt = connection.prepareStatement(query);) {
             return stmt.executeUpdate() == 0;
         } catch (SQLException e) {
             throw new QueryExecuteException("Unable to execute query " + query, e);
         }
     }
-
-
 }

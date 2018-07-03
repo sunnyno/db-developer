@@ -14,23 +14,23 @@ public class ResultSetMapper {
         try {
             Data data = new Data();
             data.setColumnNames(new ArrayList<>());
-            for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-                ResultSetMetaData metaData = resultSet.getMetaData();
-                String columnName = metaData.getColumnName(i + 1);
+            ResultSetMetaData rsMetaData = resultSet.getMetaData();
+            for (int i = 0; i < rsMetaData.getColumnCount(); i++) {
+                String columnName = rsMetaData.getColumnName(i + 1);
                 data.getColumnNames().add(columnName);
             }
             data.setData(new ArrayList<>());
 
             while (resultSet.next()) {
                 List<String> row = new ArrayList<>();
-                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                for (int i = 1; i <= rsMetaData.getColumnCount(); i++) {
                     row.add(resultSet.getString(i));
                 }
                 data.getData().add(row);
             }
             return data;
         } catch (SQLException e) {
-            throw new RuntimeException("Error mapping data");
+            throw new RuntimeException("Error mapping data",e);
         }
     }
 }

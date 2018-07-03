@@ -20,14 +20,13 @@ public class QueryMessageService {
     private QueryDao queryDao;
 
     public QueryMessageService() {
-        queryDao = (QueryDao) ServiceLocator.get("queryDao");
+        queryDao = ServiceLocator.get(QueryDao.class);
     }
 
     public List<Result> execute(String[] queries) {
         List<Result> results = new ArrayList<>();
         for (String query : queries) {
             Result result = new Result();
-
             query = query.toLowerCase().trim();
             try {
                 if (query.contains(SELECT)) {
@@ -37,7 +36,6 @@ public class QueryMessageService {
                     List<List<String>> rows = data.getData();
                     result.setHasData(rows != null);
                     int affectedRows = (rows != null) ? rows.size() : 0;
-
                     result.setMessage(affectedRows + (affectedRows == 1 ? " row" : " rows") + " fetched\n");
 
                 } else {
@@ -49,14 +47,12 @@ public class QueryMessageService {
                 result.setMessage(e.getMessage() + (e.getCause() != null ? " :\n " + e.getCause().getMessage() : "") + "\n");
             }
             results.add(result);
-
         }
         return results;
     }
 
 
     String applyFunction(String query) {
-
         if (query.contains(INSERT)) {
             Integer affectedRows = queryDao.insert(query);
             return affectedRows + (affectedRows == 1 ? " row" : " rows") + " inserted\n";
